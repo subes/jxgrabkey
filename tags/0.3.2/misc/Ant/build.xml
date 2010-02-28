@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JXGrabKey" default="package" basedir=".">
+    <description>Used for making releases of JXGrabKey.</description>
+
+    <tstamp>
+        <format property="TODAY_DE" pattern="dd.MM.yyyy" locale="de,DE"/>
+    </tstamp>
+
+    <!-- Load properties. First user specific properties which will override common properties. -->
+    <property file="${user.name}.properties"/>
+    <property file="common.properties"/>
+
+    <target name="-init">
+        <mkdir dir="${release.dir}"/>
+        <mkdir dir="${release.dir.lib}"/>
+        <mkdir dir="${release.dir.docs}"/>
+    </target>
+
+    <target name="-clean">
+        <ant dir="${nbproject.java.dir}" target="clean"/>
+        <exec dir="${nbproject.cpp.dir}" executable="make">
+            <arg value="CONF=Release"/>
+            <arg value="clean"/>
+        </exec>
+        <delete dir="${release.dir}"/>
+        <delete file="${nbproject.java.manifest}"/>
+    </target>
+
+    <target name="-build">
+        <!-- create the manifest file -->
+        <manifest file="${nbproject.java.manifest}">
+            <attribute name="Built-By" value="${user.name} (${TODAY_DE})"/>
+            <attribute name="Implementation-Title" value="JXGrabKey"/>
+            <attribute name="Implementation-Version" value="${release.version}"/>
+            <attribute name="Implementation-Vendor" value="http://jxgrabkey.sourceforge.net"/>
+        </manifest>
+        <!-- build java project -->
+        <ant dir="${nbproject.java.dir}" target="jar">
+            <property name="manifest.file" value="manifest.mf"/>
+            <property name="main.class" value=""/>
+        </ant>
+        <ant dir="${nbproject.java.dir}" target="javadoc">
+            <property name="no.javadoc.preview" value="true"/>
+        </ant>
+        <!-- build cpp project -->
+        <exec dir="${nbproject.cpp.dir}" executable="make">
+            <arg value="CONF=Release"/>
+            <arg value="build"/>
+        </exec>
+    </target>
+
+    <target name="-copy" depends="-init">
+        <!-- copy jar -->
+        <copy todir="${release.dir.lib}">
+            <fileset dir="${nbproject.java.dir.dist}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+        <!-- copy lib -->
+        <copy todir="${release.dir.lib}">
+            <fileset dir="${nbproject.cpp.dir.dist}">
+                <include name="**/*.so"/>
+            </fileset>
+        </copy>
+        <!-- copy javadoc -->
+        <copy todir="${release.dir.docs}">
+            <fileset dir="${nbproject.java.dir.dist}/javadoc"/>
+        </copy>
+        <!-- copy releasefiles -->
+        <copy todir="${release.dir}">
+            <fileset dir="${releasefiles.dir}">
+                <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-tar">
+        <copydir src="${release.dir}" dest="${tar.dir}/${release.dir}"/>
+        <tar destfile="${release.tar}" basedir="${tar.dir}"/>
+        <bzip2 src="${release.tar}" destfile="${release.tar.bz2}"/>
+        <delete file="${release.tar}"/>
+        <delete dir="${tar.dir}"/>
+        <delete dir="${release.dir}"/>
+    </target>
+
+    <target name="package" description="Creates the release package.">
+        <delete file="${release.tar.bz2}"/>
+        <antcall target="-clean"/>
+        <antcall target="-build"/>
+        <antcall target="-copy"/>
+        <antcall target="-tar"/>
+        <antcall target="-clean"/>
+    </target>
+
+</project>

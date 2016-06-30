@@ -15,7 +15,12 @@ public class JXGrabKeyTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.load(new File("../C++/dist/Release/GNU-Linux-x86/libJXGrabKey.so").getCanonicalPath());
+	try{
+        	System.load(new File("../C++/dist/Release/GNU-Linux-x86/libJXGrabKey.so").getCanonicalPath());
+	} catch(Throwable t){
+		//fallback for FreeBSD
+		System.loadLibrary("JXGrabKey");
+	}
         JXGrabKey.setDebugOutput(true);
         JXGrabKey.getInstance();
     }

@@ -29,6 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <unistd.h>
 
 using namespace std;
 
@@ -318,7 +319,7 @@ JNIEXPORT void JNICALL Java_jxgrabkey_JXGrabKey_listen(JNIEnv *_env,
 	}
 
 	XSetErrorHandler((XErrorHandler) xErrorHandler);
-	pthread_spin_init(&x_lock, NULL); // init here bcoz of the returns
+	pthread_spin_init(&x_lock, PTHREAD_PROCESS_SHARED); // init here bcoz of the returns
 
 	doListen = true;
 	isListening = true;

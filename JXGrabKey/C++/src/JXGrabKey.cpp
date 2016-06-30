@@ -23,6 +23,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 
 #include <pthread.h>
 #include <streambuf>
@@ -347,8 +348,8 @@ JNIEXPORT void JNICALL Java_jxgrabkey_JXGrabKey_listen(JNIEnv *_env,
 							sout << "listen() - received: id = " << std::dec
 									<< keys.at(i).id
 									<< "; type = KeyPress; x11Keycode = '"
-									<< XKeysymToString(XKeycodeToKeysym(dpy,
-											ev.xkey.keycode, 0)) << "' (0x"
+									<< XKeysymToString(XkbKeycodeToKeysym(dpy,
+											ev.xkey.keycode, 0, 0)) << "' (0x"
 									<< std::hex << ev.xkey.keycode
 									<< "); x11Mask = 0x" << std::hex
 									<< ev.xkey.state << endl;

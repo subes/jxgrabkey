@@ -248,7 +248,7 @@ public final class X11KeysymDefinitions {
     public static final int DELETE = 0xffff; /* delete, rubout */
 
 
-    /* International & multi-key character composition. */
+    /* International and multi-key character composition. */
 
     public static final int MULTI_KEY = 0xff20; /* multi-key character compose */
     public static final int CODEINPUT = 0xff37;
@@ -282,7 +282,7 @@ public final class X11KeysymDefinitions {
     public static final int MAE_KOHO = 0xff3e; /* previous candidate */
 
 
-    /** Cursor control & motion. */
+    /** Cursor control and motion. */
 
     public static final int HOME = 0xff50;
     public static final int LEFT = 0xff51; /* move left, left arrow */
